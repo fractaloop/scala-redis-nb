@@ -139,6 +139,10 @@ class TcpPipelineHandler[Ctx <: PipelineContext, Cmd, Evt](
 
   val ctx = init.makeContext(context)
 
+  override def preRestart(reason:Throwable, message:Option[Any]){
+    context.system.log.error(reason, "Unhandled exception for message: {}", message)
+  }
+
   val pipes = PipelineFactory.buildWithSinkFunctions(ctx, init.stages)({
     case Success(cmd) ⇒
       cmd match {
